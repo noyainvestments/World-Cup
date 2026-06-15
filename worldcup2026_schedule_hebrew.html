@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>מונדיאל 2026 - לוח משחקים</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Heebo:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --pitch:    #0a2e0f;
+    --deep:     #061a09;
+    --turf:     #14521e;
+    --stripe:   #0f3d14;
+    --gold:     #c9a227;
+    --gold-lite:#f0cb58;
+    --chalk:    #e8f5e9;
+    --muted:    #6ea875;
+    --dim:      #2e5935;
+    --white:    #ffffff;
+    --group-a:  #c9a227; --group-b: #4fc3f7; --group-c: #ef9a9a;
+    --group-d:  #80cbc4; --group-e: #ce93d8; --group-f: #ffcc80;
+    --group-g:  #a5d6a7; --group-h: #f48fb1; --group-i: #90caf9;
+    --group-j:  #ffe082; --group-k: #bcaaa4; --group-l: #80deea;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--deep);
+    color: var(--chalk);
+    font-family: 'Heebo', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    direction: rtl;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      repeating-linear-gradient(90deg, transparent 0px, transparent 79px, rgba(255,255,255,0.018) 79px, rgba(255,255,255,0.018) 80px),
+      repeating-linear-gradient(0deg, transparent 0px, transparent 59px, rgba(255,255,255,0.018) 59px, rgba(255,255,255,0.018) 60px);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .hero {
+    position: relative;
+    z-index:1;
+    text-align: center;
+    padding: 48px 24px 36px;
+    background: linear-gradient(180deg, #0f3d14 0%, transparent 100%);
+    border-bottom: 1px solid var(--dim);
+  }
+
+  .trophy-line {
+    font-family: 'Heebo', sans-serif;
+    font-size: clamp(11px, 1.4vw, 15px);
+    letter-spacing: 0.05em;
+    color: var(--gold);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .hero h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(52px, 8vw, 110px);
+    letter-spacing: 0.04em;
+    color: var(--white);
+    line-height: 1;
+    text-shadow: 0 0 60px rgba(201,162,39,0.3);
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero-title-he {
+    font-family: 'Heebo', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800;
+    color: var(--chalk);
+    line-height: 1.1;
+    margin-top: 4px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-title-he span { color: var(--gold); }
+
+  .hero-sub {
+    margin-top: 12px;
+    font-size: clamp(11px, 1.3vw, 14px);
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  .tz-badge {
+    display: inline-block;
+    margin-top: 10px;
+    background: rgba(201,162,39,0.15);
+    border: 1px solid rgba(201,162,39,0.4);
+    color: var(--gold-lite);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 100px;
+    letter-spacing: 0.04em;
+  }
+
+  .stage-nav {
+    position: relative;
+    z-index:1;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 24px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--dim);
+  }
+
+  .stage-btn {
+    background: transparent;
+    border: 1px solid var(--dim);
+    color: var(--muted);
+    font-family: 'Heebo', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 18px;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .stage-btn:hover, .stage-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--deep);
+  }
+
+  .stats-bar {
+    position: relative;
+    z-index:1;
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    padding: 16px 24px;
+    background: rgba(14,58,20,0.4);
+    border-top: 1px solid var(--dim);
+    border-bottom: 1px solid var(--dim);
+    flex-wrap: wrap;
+  }
+
+  .stat-item { text-align: center; }
+
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    color: var(--gold);
+    letter-spacing: 0.04em;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .content {
+    position: relative;
+    z-index:1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  .group-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 28px;
+    justify-content: center;
+  }
+
+  .gpill {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 100px;
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s, transform 0.1s;
+    font-family: 'Heebo', sans-serif;
+  }
+
+  .gpill:hover { opacity: 0.8; transform: scale(1.04); }
+  .gpill.on { opacity: 1; }
+
+  .day-block { margin-bottom: 36px; }
+
+  .day-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--dim);
+    flex-direction: row-reverse;
+  }
+
+  .day-date {
+    font-family: 'Heebo', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gold);
+    white-space: nowrap;
+  }
+
+  .day-label {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .day-count {
+    margin-right: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--dim);
+  }
+
+  .match-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 8px;
+  }
+
+  .match-card {
+    background: rgba(20, 82, 30, 0.18);
+    border: 1px solid rgba(46, 89, 53, 0.6);
+    border-radius: 4px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s, border-color 0.15s;
+    flex-direction: row-reverse;
+  }
+
+  .match-card:hover {
+    background: rgba(20, 82, 30, 0.35);
+    border-color: rgba(201, 162, 39, 0.3);
+  }
+
+  .match-card.played { opacity: 0.6; }
+
+  .group-badge {
+    width: 28px;
+    height: 28px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    flex-shrink: 0;
+    color: var(--deep);
+    font-weight: 700;
+  }
+
+  .match-teams {
+    flex: 1;
+    min-width: 0;
+    text-align: right;
+  }
+
+  .teams-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--white);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+  }
+
+  .vs {
+    font-size: 10px;
+    color: var(--dim);
+    font-weight: 400;
+    flex-shrink: 0;
+  }
+
+  .match-meta {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: right;
+  }
+
+  .match-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--gold-lite);
+    text-align: left;
+    flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  .result-score {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: 0.06em;
+    text-align: left;
+    flex-shrink: 0;
+    min-width: 48px;
+  }
+
+  /* Late night highlight */
+  .match-time.late { color: #ef9a9a; }
+  .match-time.next-day { color: #ce93d8; }
+
+  /* KO */
+  .ko-round { margin-bottom: 28px; }
+
+  .ko-header {
+    font-family: 'Heebo', sans-serif;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold-lite);
+    margin-bottom: 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--dim);
+    text-align: right;
+  }
+
+  .ko-match {
+    background: rgba(201, 162, 39, 0.06);
+    border: 1px solid rgba(201, 162, 39, 0.18);
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-direction: row-reverse;
+  }
+
+  .ko-match-teams {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--chalk);
+    text-align: right;
+  }
+
+  .ko-match-sub {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .ko-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--gold-lite);
+    text-align: left;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .legend {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  .hidden { display: none !important; }
+
+  .footer {
+    position: relative;
+    z-index:1;
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: var(--dim);
+    border-top: 1px solid rgba(46,89,53,0.3);
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="trophy-line">⚽ פיפ"א מונדיאל 2026 &nbsp;·&nbsp; 11 יוני – 19 יולי &nbsp;·&nbsp; ארה"ב · קנדה · מקסיקו</div>
+  <h1>WORLD CUP <span>2026</span></h1>
+  <div class="hero-title-he">לוח <span>משחקים</span> מלא</div>
+  <div class="hero-sub">48 נבחרות &nbsp;·&nbsp; 104 משחקים &nbsp;·&nbsp; 16 אצטדיונים &nbsp;·&nbsp; 3 מדינות</div>
+  <div class="tz-badge">🕐 כל השעות לפי שעון ירושלים (IDT = UTC+3)</div>
+</div>
+
+<div class="stage-nav">
+  <button class="stage-btn active" onclick="showStage('group',this)">שלב הבתים</button>
+  <button class="stage-btn" onclick="showStage('knockout',this)">שלב הנוקאאוט</button>
+</div>
+
+<div class="stats-bar">
+  <div class="stat-item"><div class="stat-num">48</div><div class="stat-label">נבחרות</div></div>
+  <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">בתים</div></div>
+  <div class="stat-item"><div class="stat-num">104</div><div class="stat-label">משחקים</div></div>
+  <div class="stat-item"><div class="stat-num">39</div><div class="stat-label">ימים</div></div>
+  <div class="stat-item"><div class="stat-num">16</div><div class="stat-label">אצטדיונים</div></div>
+</div>
+
+<!-- GROUP STAGE -->
+<div id="group-stage" class="content">
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#f0cb58"></div> שעת ערב / לילה</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ef9a9a"></div> אחרי חצות</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#ce93d8"></div> שעות קטנות של הלילה</div>
+  </div>
+
+  <div class="group-filter" id="gpills">
+    <button class="gpill on" style="background:var(--chalk);color:#111" onclick="filterGroup(this,'all')">כל הבתים</button>
+    <button class="gpill" style="background:var(--group-a);color:#111" onclick="filterGroup(this,'A')">בית א' · מקסיקו</button>
+    <button class="gpill" style="background:var(--group-b);color:#111" onclick="filterGroup(this,'B')">בית ב' · קנדה</button>
+    <button class="gpill" style="background:var(--group-c);color:#111" onclick="filterGroup(this,'C')">בית ג' · ברזיל</button>
+    <button class="gpill" style="background:var(--group-d);color:#111" onclick="filterGroup(this,'D')">בית ד' · ארה"ב</button>
+    <button class="gpill" style="background:var(--group-e);color:#111" onclick="filterGroup(this,'E')">בית ה' · גרמניה</button>
+    <button class="gpill" style="background:var(--group-f);color:#111" onclick="filterGroup(this,'F')">בית ו' · הולנד</button>
+    <button class="gpill" style="background:var(--group-g);color:#111" onclick="filterGroup(this,'G')">בית ז' · בלגיה</button>
+    <button class="gpill" style="background:var(--group-h);color:#111" onclick="filterGroup(this,'H')">בית ח' · ספרד</button>
+    <button class="gpill" style="background:var(--group-i);color:#111" onclick="filterGroup(this,'I')">בית ט' · צרפת</button>
+    <button class="gpill" style="background:var(--group-j);color:#111" onclick="filterGroup(this,'J')">בית י' · ארגנטינה</button>
+    <button class="gpill" style="background:var(--group-k);color:#111" onclick="filterGroup(this,'K')">בית יא' · פורטוגל</button>
+    <button class="gpill" style="background:var(--group-l);color:#111" onclick="filterGroup(this,'L')">בית יב' · אנגליה</button>
+  </div>
+
+  <div id="matches-container"></div>
+</div>
+
+<!-- KNOCKOUT STAGE -->
+<div id="knockout-stage" class="content hidden">
+  <div id="ko-container"></div>
+</div>
+
+<div class="footer">פיפ"א מונדיאל 2026 · לוח משחקים מלא · שעות לפי שעון ירושלים (IDT)</div>
+
+<script>
+// IDT = UTC+3 (Israel Daylight Time, summer 2026)
+// Conversion from original times:
+// ET (UTC-4) → +7h
+// CDT (UTC-5) → +8h
+// CST (UTC-6) → +9h
+// PT (UTC-7) → +10h
+// GMT → +3h
+
+const GROUP_COLORS = {
+  A:'#c9a227',B:'#4fc3f7',C:'#ef9a9a',D:'#80cbc4',E:'#ce93d8',F:'#ffcc80',
+  G:'#a5d6a7',H:'#f48fb1',I:'#90caf9',J:'#ffe082',K:'#bcaaa4',L:'#80deea'
+};
+
+// timeClass: 'normal' = before midnight, 'late' = after midnight same date, 'next-day' = 02:00+
+// All times converted to IDT (UTC+3)
+// Notes on next-day conversions: some matches tip into the next calendar day in Israel
+const GROUP_MATCHES = [
+  // ===== JUNE 11 (Thu) =====
+  // Mexico vs SA: 1pm CST (19:00 UTC) = 22:00 IDT Jun 11
+  { date:'יום ה׳, 11 ביוני', dateKey:'jun11', g:'A', home:'מקסיקו', away:'דרום אפריקה', idt:'22:00', tc:'normal', venue:'מקסיקו סיטי', result:'2-0' },
+  // South Korea vs Czechia: 8pm CST (02:00 UTC Jun12) = 05:00 IDT Jun 12
+  { date:'יום ה׳, 11 ביוני', dateKey:'jun11', g:'A', home:'דרום קוריאה', away:'צ׳כיה', idt:'05:00 (12 יוני)', tc:'next-day', venue:'גוואדלחרה', result:'2-1' },
+
+  // ===== JUNE 12 (Fri) =====
+  // Canada vs Bosnia: 3pm ET (19:00 UTC) = 22:00 IDT Jun 12
+  { date:'יום ו׳, 12 ביוני', dateKey:'jun12', g:'B', home:'קנדה', away:'בוסניה', idt:'22:00', tc:'normal', venue:'טורונטו', result:'1-1' },
+  // USA vs Paraguay: 6pm PT (01:00 UTC Jun13) = 04:00 IDT Jun 13
+  { date:'יום ו׳, 12 ביוני', dateKey:'jun12', g:'D', home:'ארה"ב', away:'פרגוואי', idt:'04:00 (13 יוני)', tc:'next-day', venue:'לוס אנג׳לס', result:'1-0' },
+
+  // ===== JUNE 13 (Sat) =====
+  // Qatar vs Switzerland: 12pm PT (19:00 UTC) = 22:00 IDT Jun 13
+  { date:'שבת, 13 ביוני', dateKey:'jun13', g:'B', home:'קטאר', away:'שווייץ', idt:'22:00', tc:'normal', venue:'סן פרנסיסקו', result:'0-2' },
+  // Brazil vs Morocco: 6pm ET (22:00 UTC) = 01:00 IDT Jun 14
+  { date:'שבת, 13 ביוני', dateKey:'jun13', g:'C', home:'ברזיל', away:'מרוקו', idt:'01:00 (14 יוני)', tc:'late', venue:'ניו יורק / ניו ג׳רזי' },
+  // Haiti vs Scotland: 9pm ET (01:00 UTC Jun14) = 04:00 IDT Jun 14
+  { date:'שבת, 13 ביוני', dateKey:'jun13', g:'C', home:'האיטי', away:'סקוטלנד', idt:'04:00 (14 יוני)', tc:'next-day', venue:'בוסטון' },
+  // Australia vs Turkiye: 6pm PT (01:00 UTC Jun14) = 04:00 IDT Jun 14
+  { date:'שבת, 13 ביוני', dateKey:'jun13', g:'D', home:'אוסטרליה', away:'טורקיה', idt:'04:00 (14 יוני)', tc:'next-day', venue:'ונקובר', result:'1-2' },
+
+  // ===== JUNE 14 (Sun) =====
+  // Germany vs Curacao: 12pm CDT (17:00 UTC) = 20:00 IDT
+  { date:'ראשון, 14 ביוני', dateKey:'jun14', g:'E', home:'גרמניה', away:'קוראסאו', idt:'20:00', tc:'normal', venue:'יוסטון' },
+  // Netherlands vs Japan: 3pm CDT (20:00 UTC) = 23:00 IDT
+  { date:'ראשון, 14 ביוני', dateKey:'jun14', g:'F', home:'הולנד', away:'יפן', idt:'23:00', tc:'normal', venue:'דאלאס' },
+  // Ivory Coast vs Ecuador: 7pm ET (23:00 UTC) = 02:00 IDT Jun 15
+  { date:'ראשון, 14 ביוני', dateKey:'jun14', g:'E', home:'חוף השנהב', away:'אקוודור', idt:'02:00 (15 יוני)', tc:'late', venue:'פילדלפיה' },
+  // Sweden vs Tunisia: 8pm CST (02:00 UTC Jun15) = 05:00 IDT Jun 15
+  { date:'ראשון, 14 ביוני', dateKey:'jun14', g:'F', home:'שוודיה', away:'תוניסיה', idt:'05:00 (15 יוני)', tc:'next-day', venue:'מונטריי' },
+
+  // ===== JUNE 15 (Mon) - TODAY =====
+  // Spain vs Cape Verde: 12pm ET (16:00 UTC) = 19:00 IDT
+  { date:'שני, 15 ביוני', dateKey:'jun15', g:'H', home:'ספרד', away:'כף ורדה', idt:'19:00', tc:'normal', venue:'אטלנטה', today:true },
+  // Belgium vs Egypt: 12pm PT (19:00 UTC) = 22:00 IDT
+  { date:'שני, 15 ביוני', dateKey:'jun15', g:'G', home:'בלגיה', away:'מצרים', idt:'22:00', tc:'normal', venue:'ונקובר', today:true },
+  // Saudi Arabia vs Uruguay: 6pm ET (22:00 UTC) = 01:00 IDT Jun 16
+  { date:'שני, 15 ביוני', dateKey:'jun15', g:'H', home:'ערב הסעודית', away:'אורוגוואי', idt:'01:00 (16 יוני)', tc:'late', venue:'מיאמי', today:true },
+  // Iran vs New Zealand: 6pm PT (01:00 UTC Jun16) = 04:00 IDT Jun 16
+  { date:'שני, 15 ביוני', dateKey:'jun15', g:'G', home:'איראן', away:'ניו זילנד', idt:'04:00 (16 יוני)', tc:'next-day', venue:'לוס אנג׳לס', today:true },
+
+  // ===== JUNE 16 (Tue) =====
+  // France vs Senegal: 3pm ET (19:00 UTC) = 22:00 IDT
+  { date:'שלישי, 16 ביוני', dateKey:'jun16', g:'I', home:'צרפת', away:'סנגל', idt:'22:00', tc:'normal', venue:'ניו יורק / ניו ג׳רזי' },
+  // Iraq vs Norway: 6pm ET (22:00 UTC) = 01:00 IDT Jun 17
+  { date:'שלישי, 16 ביוני', dateKey:'jun16', g:'I', home:'עיראק', away:'נורווגיה', idt:'01:00 (17 יוני)', tc:'late', venue:'בוסטון' },
+  // Argentina vs Algeria: 8pm CDT (01:00 UTC Jun17) = 04:00 IDT Jun 17
+  { date:'שלישי, 16 ביוני', dateKey:'jun16', g:'J', home:'ארגנטינה', away:'אלג׳יריה', idt:'04:00 (17 יוני)', tc:'next-day', venue:'קנזס סיטי' },
+  // Austria vs Jordan: 9pm PT (04:00 UTC Jun17) = 07:00 IDT Jun 17
+  { date:'שלישי, 16 ביוני', dateKey:'jun16', g:'J', home:'אוסטריה', away:'ירדן', idt:'07:00 (17 יוני)', tc:'next-day', venue:'סן פרנסיסקו' },
+
+  // ===== JUNE 17 (Wed) =====
+  // Portugal vs DRC: 12pm CDT (17:00 UTC) = 20:00 IDT
+  { date:'רביעי, 17 ביוני', dateKey:'jun17', g:'K', home:'פורטוגל', away:'קונגו DR', idt:'20:00', tc:'normal', venue:'יוסטון' },
+  // England vs Croatia: 3pm CDT (20:00 UTC) = 23:00 IDT
+  { date:'רביעי, 17 ביוני', dateKey:'jun17', g:'L', home:'אנגליה', away:'קרואטיה', idt:'23:00', tc:'normal', venue:'דאלאס' },
+  // Ghana vs Panama: 7pm ET (23:00 UTC) = 02:00 IDT Jun 18
+  { date:'רביעי, 17 ביוני', dateKey:'jun17', g:'L', home:'גאנה', away:'פנמה', idt:'02:00 (18 יוני)', tc:'late', venue:'טורונטו' },
+  // Uzbekistan vs Colombia: 8pm CST (02:00 UTC Jun18) = 05:00 IDT Jun 18
+  { date:'רביעי, 17 ביוני', dateKey:'jun17', g:'K', home:'אוזבקיסטן', away:'קולומביה', idt:'05:00 (18 יוני)', tc:'next-day', venue:'מקסיקו סיטי' },
+
+  // ===== JUNE 18 (Thu) =====
+  // Czechia vs South Africa: 12pm ET (16:00 UTC) = 19:00 IDT
+  { date:'יום ה׳, 18 ביוני', dateKey:'jun18', g:'A', home:'צ׳כיה', away:'דרום אפריקה', idt:'19:00', tc:'normal', venue:'אטלנטה' },
+  // Switzerland vs Bosnia: 12pm PT (19:00 UTC) = 22:00 IDT
+  { date:'יום ה׳, 18 ביוני', dateKey:'jun18', g:'B', home:'שווייץ', away:'בוסניה', idt:'22:00', tc:'normal', venue:'לוס אנג׳לס' },
+  // Canada vs Qatar: 3pm PT (22:00 UTC) = 01:00 IDT Jun 19
+  { date:'יום ה׳, 18 ביוני', dateKey:'jun18', g:'B', home:'קנדה', away:'קטאר', idt:'01:00 (19 יוני)', tc:'late', venue:'ונקובר' },
+  // Mexico vs South Korea: 7pm CST (01:00 UTC Jun19) = 04:00 IDT Jun 19
+  { date:'יום ה׳, 18 ביוני', dateKey:'jun18', g:'A', home:'מקסיקו', away:'דרום קוריאה', idt:'04:00 (19 יוני)', tc:'next-day', venue:'גוואדלחרה' },
+
+  // ===== JUNE 19 (Fri) =====
+  // USA vs Australia: 12pm PT (19:00 UTC) = 22:00 IDT
+  { date:'יום ו׳, 19 ביוני', dateKey:'jun19', g:'D', home:'ארה"ב', away:'אוסטרליה', idt:'22:00', tc:'normal', venue:'סיאטל' },
+  // Scotland vs Morocco: 6pm ET (22:00 UTC) = 01:00 IDT Jun 20
+  { date:'יום ו׳, 19 ביוני', dateKey:'jun19', g:'C', home:'סקוטלנד', away:'מרוקו', idt:'01:00 (20 יוני)', tc:'late', venue:'בוסטון' },
+  // Brazil vs Haiti: 8:30pm ET (00:30 UTC Jun20) = 03:30 IDT Jun 20
+  { date:'יום ו׳, 19 ביוני', dateKey:'jun19', g:'C', home:'ברזיל', away:'האיטי', idt:'03:30 (20 יוני)', tc:'next-day', venue:'פילדלפיה' },
+  // Turkiye vs Paraguay: 9pm PT (04:00 UTC Jun20) = 07:00 IDT Jun 20
+  { date:'יום ו׳, 19 ביוני', dateKey:'jun19', g:'D', home:'טורקיה', away:'פרגוואי', idt:'07:00 (20 יוני)', tc:'next-day', venue:'סן פרנסיסקו' },
+
+  // ===== JUNE 20 (Sat) =====
+  // Netherlands vs Sweden: 12pm CDT (17:00 UTC) = 20:00 IDT
+  { date:'שבת, 20 ביוני', dateKey:'jun20', g:'F', home:'הולנד', away:'שוודיה', idt:'20:00', tc:'normal', venue:'יוסטון' },
+  // Germany vs Ivory Coast: 4pm ET (20:00 UTC) = 23:00 IDT
+  { date:'שבת, 20 ביוני', dateKey:'jun20', g:'E', home:'גרמניה', away:'חוף השנהב', idt:'23:00', tc:'normal', venue:'טורונטו' },
+  // Ecuador vs Curacao: 7pm CDT (00:00 UTC Jun21) = 03:00 IDT Jun 21
+  { date:'שבת, 20 ביוני', dateKey:'jun20', g:'E', home:'אקוודור', away:'קוראסאו', idt:'03:00 (21 יוני)', tc:'late', venue:'קנזס סיטי' },
+  // Tunisia vs Japan: 10pm CST (04:00 UTC Jun21) = 07:00 IDT Jun 21
+  { date:'שבת, 20 ביוני', dateKey:'jun20', g:'F', home:'תוניסיה', away:'יפן', idt:'07:00 (21 יוני)', tc:'next-day', venue:'מונטריי' },
+
+  // ===== JUNE 21 (Sun) =====
+  // Spain vs Saudi Arabia: 12pm ET (16:00 UTC) = 19:00 IDT
+  { date:'ראשון, 21 ביוני', dateKey:'jun21', g:'H', home:'ספרד', away:'ערב הסעודית', idt:'19:00', tc:'normal', venue:'אטלנטה' },
+  // Belgium vs Iran: 12pm PT (19:00 UTC) = 22:00 IDT
+  { date:'ראשון, 21 ביוני', dateKey:'jun21', g:'G', home:'בלגיה', away:'איראן', idt:'22:00', tc:'normal', venue:'לוס אנג׳לס' },
+  // Uruguay vs Cape Verde: 6pm ET (22:00 UTC) = 01:00 IDT Jun 22
+  { date:'ראשון, 21 ביוני', dateKey:'jun21', g:'H', home:'אורוגוואי', away:'כף ורדה', idt:'01:00 (22 יוני)', tc:'late', venue:'מיאמי' },
+  // New Zealand vs Egypt: 6pm PT (01:00 UTC Jun22) = 04:00 IDT Jun 22
+  { date:'ראשון, 21 ביוני', dateKey:'jun21', g:'G', home:'ניו זילנד', away:'מצרים', idt:'04:00 (22 יוני)', tc:'next-day', venue:'ונקובר' },
+
+  // ===== JUNE 22 (Mon) =====
+  // Argentina vs Austria: 12pm CDT (17:00 UTC) = 20:00 IDT
+  { date:'שני, 22 ביוני', dateKey:'jun22', g:'J', home:'ארגנטינה', away:'אוסטריה', idt:'20:00', tc:'normal', venue:'דאלאס' },
+  // France vs Iraq: 5pm ET (21:00 UTC) = 00:00 IDT Jun 23
+  { date:'שני, 22 ביוני', dateKey:'jun22', g:'I', home:'צרפת', away:'עיראק', idt:'00:00 (23 יוני)', tc:'late', venue:'פילדלפיה' },
+  // Norway vs Senegal: 8pm ET (00:00 UTC Jun23) = 03:00 IDT Jun 23
+  { date:'שני, 22 ביוני', dateKey:'jun22', g:'I', home:'נורווגיה', away:'סנגל', idt:'03:00 (23 יוני)', tc:'late', venue:'ניו יורק / ניו ג׳רזי' },
+  // Jordan vs Algeria: 8pm PT (03:00 UTC Jun23) = 06:00 IDT Jun 23
+  { date:'שני, 22 ביוני', dateKey:'jun22', g:'J', home:'ירדן', away:'אלג׳יריה', idt:'06:00 (23 יוני)', tc:'next-day', venue:'סן פרנסיסקו' },
+
+  // ===== JUNE 23 (Tue) =====
+  // Portugal vs Uzbekistan: 12pm CDT (17:00 UTC) = 20:00 IDT
+  { date:'שלישי, 23 ביוני', dateKey:'jun23', g:'K', home:'פורטוגל', away:'אוזבקיסטן', idt:'20:00', tc:'normal', venue:'יוסטון' },
+  // England vs Ghana: 4pm ET (20:00 UTC) = 23:00 IDT
+  { date:'שלישי, 23 ביוני', dateKey:'jun23', g:'L', home:'אנגליה', away:'גאנה', idt:'23:00', tc:'normal', venue:'בוסטון' },
+  // Panama vs Croatia: 7pm ET (23:00 UTC) = 02:00 IDT Jun 24
+  { date:'שלישי, 23 ביוני', dateKey:'jun23', g:'L', home:'פנמה', away:'קרואטיה', idt:'02:00 (24 יוני)', tc:'late', venue:'טורונטו' },
+  // Colombia vs DRC: 8pm CST (02:00 UTC Jun24) = 05:00 IDT Jun 24
+  { date:'שלישי, 23 ביוני', dateKey:'jun23', g:'K', home:'קולומביה', away:'קונגו DR', idt:'05:00 (24 יוני)', tc:'next-day', venue:'גוואדלחרה' },
+
+  // ===== JUNE 24 (Wed) =====
+  // Switzerland vs Canada: 12pm PT (19:00 UTC) = 22:00 IDT
+  { date:'רביעי, 24 ביוני', dateKey:'jun24', g:'B', home:'שווייץ', away:'קנדה', idt:'22:00', tc:'normal', venue:'ונקובר' },
+  // Bosnia vs Qatar: 12pm PT (19:00 UTC) = 22:00 IDT
+  { date:'רביעי, 24 ביוני', dateKey:'jun24', g:'B', home:'בוסניה', away:'קטאר', idt:'22:00', tc:'normal', venue:'סיאטל' },
+  // Scotland vs Brazil: 6pm ET (22:00 UTC) = 01:00 IDT Jun 25
+  { date:'רביעי, 24 ביוני', dateKey:'jun24', g:'C', home:'סקוטלנד', away:'ברזיל', idt:'01:00 (25 יוני)', tc:'late', venue:'מיאמי' },
+  // Morocco vs Haiti: 6pm ET (22:00 UTC) = 01:00 IDT Jun 25
+  { date:'רביעי, 24 ביוני', dateKey:'jun24', g:'C', home:'מרוקו', away:'האיטי', idt:'01:00 (25 יוני)', tc:'late', venue:'אטלנטה' },
+  // Czechia vs Mexico: 7pm CST (01:00 UTC Jun25) = 04:00 IDT Jun 25
+  { date:'רביעי, 24 ביוני', dateKey:'jun24', g:'A', home:'צ׳כיה', away:'מקסיקו', idt:'04:00 (25 יוני)', tc:'next-day', venue:'מקסיקו סיטי' },
+  // South Africa vs South Korea: 7pm CST (01:00 UTC Jun25) = 04:00 IDT Jun 25
+  { date:'רביעי, 24 ביוני', dateKey:'jun24', g:'A', home:'דרום אפריקה', away:'דרום קוריאה', idt:'04:00 (25 יוני)', tc:'next-day', venue:'מונטריי' },
+
+  // ===== JUNE 25 (Thu) =====
+  // Ecuador vs Germany: 4pm ET (20:00 UTC) = 23:00 IDT
+  { date:'יום ה׳, 25 ביוני', dateKey:'jun25', g:'E', home:'אקוודור', away:'גרמניה', idt:'23:00', tc:'normal', venue:'ניו יורק / ניו ג׳רזי' },
+  // Curacao vs Ivory Coast: 4pm ET (20:00 UTC) = 23:00 IDT
+  { date:'יום ה׳, 25 ביוני', dateKey:'jun25', g:'E', home:'קוראסאו', away:'חוף השנהב', idt:'23:00', tc:'normal', venue:'פילדלפיה' },
+  // Japan vs Sweden: 6pm CDT (23:00 UTC) = 02:00 IDT Jun 26
+  { date:'יום ה׳, 25 ביוני', dateKey:'jun25', g:'F', home:'יפן', away:'שוודיה', idt:'02:00 (26 יוני)', tc:'late', venue:'דאלאס' },
+  // Tunisia vs Netherlands: 6pm CDT (23:00 UTC) = 02:00 IDT Jun 26
+  { date:'יום ה׳, 25 ביוני', dateKey:'jun25', g:'F', home:'תוניסיה', away:'הולנד', idt:'02:00 (26 יוני)', tc:'late', venue:'קנזס סיטי' },
+  // Turkiye vs USA: 7pm PT (02:00 UTC Jun26) = 05:00 IDT Jun 26
+  { date:'יום ה׳, 25 ביוני', dateKey:'jun25', g:'D', home:'טורקיה', away:'ארה"ב', idt:'05:00 (26 יוני)', tc:'next-day', venue:'לוס אנג׳לס' },
+  // Paraguay vs Australia: 7pm PT (02:00 UTC Jun26) = 05:00 IDT Jun 26
+  { date:'יום ה׳, 25 ביוני', dateKey:'jun25', g:'D', home:'פרגוואי', away:'אוסטרליה', idt:'05:00 (26 יוני)', tc:'next-day', venue:'סן פרנסיסקו' },
+
+  // ===== JUNE 26 (Fri) =====
+  // Norway vs France: 3pm ET (19:00 UTC) = 22:00 IDT
+  { date:'יום ו׳, 26 ביוני', dateKey:'jun26', g:'I', home:'נורווגיה', away:'צרפת', idt:'22:00', tc:'normal', venue:'בוסטון' },
+  // Senegal vs Iraq: 3pm ET (19:00 UTC) = 22:00 IDT
+  { date:'יום ו׳, 26 ביוני', dateKey:'jun26', g:'I', home:'סנגל', away:'עיראק', idt:'22:00', tc:'normal', venue:'טורונטו' },
+  // Cape Verde vs Saudi Arabia: 7pm CDT (00:00 UTC Jun27) = 03:00 IDT Jun 27
+  { date:'יום ו׳, 26 ביוני', dateKey:'jun26', g:'H', home:'כף ורדה', away:'ערב הסעודית', idt:'03:00 (27 יוני)', tc:'late', venue:'יוסטון' },
+  // Uruguay vs Spain: 6pm CST (00:00 UTC Jun27) = 03:00 IDT Jun 27
+  { date:'יום ו׳, 26 ביוני', dateKey:'jun26', g:'H', home:'אורוגוואי', away:'ספרד', idt:'03:00 (27 יוני)', tc:'late', venue:'גוואדלחרה' },
+  // Egypt vs Iran: 8pm PT (03:00 UTC Jun27) = 06:00 IDT Jun 27
+  { date:'יום ו׳, 26 ביוני', dateKey:'jun26', g:'G', home:'מצרים', away:'איראן', idt:'06:00 (27 יוני)', tc:'next-day', venue:'סיאטל' },
+  // New Zealand vs Belgium: 8pm PT (03:00 UTC Jun27) = 06:00 IDT Jun 27
+  { date:'יום ו׳, 26 ביוני', dateKey:'jun26', g:'G', home:'ניו זילנד', away:'בלגיה', idt:'06:00 (27 יוני)', tc:'next-day', venue:'ונקובר' },
+
+  // ===== JUNE 27 (Sat) =====
+  // Panama vs England: 5pm ET (21:00 UTC) = 00:00 IDT Jun 28
+  { date:'שבת, 27 ביוני', dateKey:'jun27', g:'L', home:'פנמה', away:'אנגליה', idt:'00:00 (28 יוני)', tc:'late', venue:'ניו יורק / ניו ג׳רזי' },
+  // Croatia vs Ghana: 5pm ET (21:00 UTC) = 00:00 IDT Jun 28
+  { date:'שבת, 27 ביוני', dateKey:'jun27', g:'L', home:'קרואטיה', away:'גאנה', idt:'00:00 (28 יוני)', tc:'late', venue:'פילדלפיה' },
+  // Colombia vs Portugal: 7:30pm ET (23:30 UTC) = 02:30 IDT Jun 28
+  { date:'שבת, 27 ביוני', dateKey:'jun27', g:'K', home:'קולומביה', away:'פורטוגל', idt:'02:30 (28 יוני)', tc:'late', venue:'מיאמי' },
+  // DRC vs Uzbekistan: 7:30pm ET (23:30 UTC) = 02:30 IDT Jun 28
+  { date:'שבת, 27 ביוני', dateKey:'jun27', g:'K', home:'קונגו DR', away:'אוזבקיסטן', idt:'02:30 (28 יוני)', tc:'late', venue:'אטלנטה' },
+  // Algeria vs Austria: 9pm CDT (02:00 UTC Jun28) = 05:00 IDT Jun 28
+  { date:'שבת, 27 ביוני', dateKey:'jun27', g:'J', home:'אלג׳יריה', away:'אוסטריה', idt:'05:00 (28 יוני)', tc:'next-day', venue:'קנזס סיטי' },
+  // Jordan vs Argentina: 9pm CDT (02:00 UTC Jun28) = 05:00 IDT Jun 28
+  { date:'שבת, 27 ביוני', dateKey:'jun27', g:'J', home:'ירדן', away:'ארגנטינה', idt:'05:00 (28 יוני)', tc:'next-day', venue:'דאלאס' },
+];
+
+const KO_ROUNDS = [
+  {
+    name: 'שלב 32 - סבב ראשון', sub: '28 יוני – 3 יולי',
+    matches: [
+      { date:'א׳, 28 יוני', idt:'22:00', venue:'לוס אנג׳לס' },
+      { date:'ב׳, 29 יוני', idt:'22:00', venue:'יוסטון' },
+      { date:'ב׳, 29 יוני', idt:'23:30', venue:'בוסטון' },
+      { date:'ב׳, 29 יוני', idt:'04:00 (30 יוני)', venue:'מונטריי' },
+      { date:'ג׳, 30 יוני', idt:'20:00', venue:'דאלאס' },
+      { date:'ג׳, 30 יוני', idt:'00:00 (1 יולי)', venue:'ניו יורק / ניו ג׳רזי' },
+      { date:'ג׳, 30 יוני', idt:'04:00 (1 יולי)', venue:'מקסיקו סיטי' },
+      { date:'ד׳, 1 יולי', idt:'19:00', venue:'אטלנטה' },
+      { date:'ד׳, 1 יולי', idt:'23:00', venue:'סיאטל' },
+      { date:'ד׳, 1 יולי', idt:'23:00', venue:'סן פרנסיסקו' },
+      { date:'ה׳, 2 יולי', idt:'22:00', venue:'לוס אנג׳לס' },
+      { date:'ה׳, 2 יולי', idt:'02:00 (3 יולי)', venue:'טורונטו' },
+      { date:'ה׳, 2 יולי', idt:'05:00 (3 יולי)', venue:'ונקובר' },
+      { date:'ו׳, 3 יולי', idt:'21:00', venue:'דאלאס' },
+      { date:'ו׳, 3 יולי', idt:'01:00 (4 יולי)', venue:'מיאמי' },
+      { date:'ו׳, 3 יולי', idt:'04:30 (4 יולי)', venue:'קנזס סיטי' },
+    ]
+  },
+  {
+    name: 'שמינית גמר', sub: '4–7 יולי',
+    matches: [
+      { date:'ש׳, 4 יולי', idt:'20:00', venue:'יוסטון' },
+      { date:'ש׳, 4 יולי', idt:'00:00 (5 יולי)', venue:'פילדלפיה' },
+      { date:'א׳, 5 יולי', idt:'23:00', venue:'ניו יורק / ניו ג׳רזי' },
+      { date:'א׳, 5 יולי', idt:'03:00 (6 יולי)', venue:'מקסיקו סיטי' },
+      { date:'ב׳, 6 יולי', idt:'22:00', venue:'דאלאס' },
+      { date:'ב׳, 6 יולי', idt:'03:00 (7 יולי)', venue:'סיאטל' },
+      { date:'ג׳, 7 יולי', idt:'19:00', venue:'אטלנטה' },
+      { date:'ג׳, 7 יולי', idt:'23:00', venue:'ונקובר' },
+    ]
+  },
+  {
+    name: 'רבע גמר', sub: '9–11 יולי',
+    matches: [
+      { date:'ה׳, 9 יולי', idt:'23:00', venue:'בוסטון' },
+      { date:'ו׳, 10 יולי', idt:'22:00', venue:'לוס אנג׳לס' },
+      { date:'ש׳, 11 יולי', idt:'00:00 (12 יולי)', venue:'מיאמי' },
+      { date:'ש׳, 11 יולי', idt:'04:00 (12 יולי)', venue:'קנזס סיטי' },
+    ]
+  },
+  {
+    name: 'חצי גמר', sub: '14–15 יולי',
+    matches: [
+      { date:'ג׳, 14 יולי', idt:'22:00', venue:'דאלאס' },
+      { date:'ד׳, 15 יולי', idt:'22:00', venue:'אטלנטה' },
+    ]
+  },
+  {
+    name: 'משחק גמר שלישי', sub: '18 יולי',
+    matches: [
+      { date:'ש׳, 18 יולי', idt:'00:00 (19 יולי)', venue:'מיאמי' },
+    ]
+  },
+  {
+    name: '🏆 הגמר', sub: '19 יולי',
+    isFinal: true,
+    matches: [
+      { date:'א׳, 19 יולי', idt:'22:00', venue:'ניו יורק / ניו ג׳רזי' },
+    ]
+  },
+];
+
+// GROUP BY DATE
+function groupByDate(arr) {
+  const map = {};
+  arr.forEach(m => {
+    if(!map[m.date]) map[m.date] = [];
+    map[m.date].push(m);
+  });
+  return map;
+}
+
+let activeGroup = 'all';
+
+function renderGroupStage(filterG) {
+  const byDate = groupByDate(GROUP_MATCHES);
+  const container = document.getElementById('matches-container');
+  container.innerHTML = '';
+
+  Object.entries(byDate).forEach(([date, matches]) => {
+    const filtered = filterG === 'all' ? matches : matches.filter(m => m.g === filterG);
+    if(!filtered.length) return;
+
+    const isToday = filtered.some(m => m.today);
+
+    const block = document.createElement('div');
+    block.className = 'day-block';
+    block.innerHTML = `
+      <div class="day-header">
+        <div class="day-date">${date}${isToday ? ' <span style="font-size:11px;color:#c9a227;letter-spacing:0.04em"> ← היום</span>' : ''}</div>
+        <div class="day-label">יום משחקים</div>
+        <div class="day-count">${filtered.length} משחקים</div>
+      </div>
+      <div class="match-grid">
+        ${filtered.map(m => {
+          const col = GROUP_COLORS[m.g];
+          const played = !!m.result;
+          const tcClass = m.tc === 'next-day' ? 'next-day' : m.tc === 'late' ? 'late' : '';
+          return `
+          <div class="match-card${played?' played':''}">
+            <div class="match-time ${tcClass}">${m.idt}</div>
+            <div class="match-teams">
+              <div class="teams-row">
+                <span>${m.home}</span>
+                <span class="vs">נגד</span>
+                <span>${m.away}</span>
+              </div>
+              <div class="match-meta">${m.venue}</div>
+            </div>
+            ${played
+              ? `<div class="result-score">${m.result}</div>`
+              : `<div class="group-badge" style="background:${col}">${m.g}</div>`
+            }
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(block);
+  });
+}
+
+function renderKnockoutStage() {
+  const container = document.getElementById('ko-container');
+  container.innerHTML = '';
+  KO_ROUNDS.forEach(round => {
+    const div = document.createElement('div');
+    div.className = 'ko-round';
+    div.innerHTML = `
+      <div class="ko-header" style="${round.isFinal?'font-size:28px;color:#f0cb58;':''}">
+        ${round.name} <span style="font-size:12px;color:#6ea875;font-family:Heebo,sans-serif;font-weight:400">${round.sub}</span>
+      </div>
+      ${round.matches.map(m => `
+        <div class="ko-match" style="${round.isFinal?'border-color:rgba(201,162,39,0.5);background:rgba(201,162,39,0.08);':''}">
+          <div class="ko-time">${m.date}<br>${m.idt}</div>
+          <div class="ko-match-teams">
+            <div style="font-size:${round.isFinal?'15px':'13px'};color:${round.isFinal?'#f0cb58':'var(--chalk)'}">לקבוע · מול · לקבוע</div>
+            <div class="ko-match-sub">${m.venue}</div>
+          </div>
+        </div>
+      `).join('')}
+    `;
+    container.appendChild(div);
+  });
+}
+
+function showStage(stage, btn) {
+  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('group-stage').classList.toggle('hidden', stage !== 'group');
+  document.getElementById('knockout-stage').classList.toggle('hidden', stage !== 'knockout');
+}
+
+function filterGroup(el, g) {
+  activeGroup = g;
+  document.querySelectorAll('.gpill').forEach(p => p.classList.remove('on'));
+  el.classList.add('on');
+  renderGroupStage(g);
+}
+
+renderGroupStage('all');
+renderKnockoutStage();
+</script>
+</body>
+</html>
